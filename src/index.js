@@ -1,4 +1,5 @@
 /**
+ * fun.js
  * JS Middleware Fun
 
  * const foo = create(n => n + 1)

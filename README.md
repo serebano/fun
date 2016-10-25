@@ -1,2 +1,2 @@
-# fun
-Simple middleware system
+# fun.js
+JS Middleware Fun
