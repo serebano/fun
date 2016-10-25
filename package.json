@@ -1,0 +1,28 @@
+{
+    "name": "fun",
+    "version": "1.0.0",
+    "description": "Simple middleware system",
+    "main": "index.js",
+    "dependencies": {},
+    "devDependencies": {
+        "rollup": "^0.36.3",
+        "rollup-plugin-babel": "^2.6.1"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "rollup -c"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/sertod/fun.git"
+    },
+    "keywords": [
+        "fun"
+    ],
+    "author": "Sergiu Toderascu",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/sertod/fun/issues"
+    },
+    "homepage": "https://github.com/sertod/fun#readme"
+}
