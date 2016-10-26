@@ -1,0 +1,117 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.27/inferno.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.27/inferno-create-element.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/inferno/0.7.27/inferno-dom.min.js"></script>
+<script src="/dist/index.js"></script>
+<div id="app"></div>
+<script>
+
+    function normalize(next) {
+        return (tag, props, children) => {
+            if (!children && (Array.isArray(props) || typeof props === 'number' || typeof props === 'string')) {
+                children = props
+                props = {}
+            }
+            return next({
+                tag,
+                props: props || {},
+                children: Array.isArray(children)
+                    ? children
+                    : children ? [ children ] : []
+            })
+        }
+    }
+
+    function render(next) {
+        return input => {
+            const { props } = input
+            const output = next(input)
+            if (!props.root)
+                return output
+            InfernoDOM.render(output, document.querySelector(props.root))
+            return output
+        }
+    }
+
+    function renderToString(next) {
+        return input => {
+            const { props } = input
+            if (props.toString !== true)
+                return next(input)
+            delete input.props.root
+            return JSON.stringify(next(input), null, 4)
+        }
+    }
+
+    function events(next) {
+        return input => {
+            const keys = Object.keys(input.props)
+            const events = keys.filter(key => key.indexOf('on') === 0)
+            events.forEach(key => {
+                const event = input.props[key]
+                if (Array.isArray(event)) {
+                    const [ fn, ...args ] = event
+                    input.props[key] = (e) => fn(...args, e)
+                }
+            })
+            return next(input)
+        }
+    }
+
+    tag = fun(function create(input) {
+        const { tag, props, children } = input
+        return InfernoCreateElement(tag, props, ...children)
+    })
+
+    tag.use(render)
+    tag.use(renderToString)
+    tag.use(events)
+    tag.use(normalize)
+
+
+    foo = (props) => tag('section', [
+        tag('hr'),
+        tag('u', props.name),
+        tag('input', {
+            value: state.name + ' ;)',
+            oninput: (e) => set({ name: e.target.value })
+        }),
+    ])
+
+    bar = () => tag('button', {
+        onClick: [ set, { message: 'Wazz up?? ' + Date.now() } ]
+    }, 'Wazz up??')
+
+    myapp = () => tag('app', {
+        style: {
+            display: 'block',
+            background: '#f4f4f4',
+            padding: 24,
+            fontSize: 16
+        }
+    }, [
+        tag('h1', state.name),
+        tag(foo, {
+            name: state.message
+        }),
+        tag('input', {
+            value: state.name,
+            oninput: (e) => set({ name: e.target.value })
+        }),
+        tag(bar)
+    ])
+
+    const pub = () => tag(myapp, { root: 'div#app' })
+
+    let state = {
+        name: 'Demo App',
+        message: '...'
+    }
+
+    function set(payload) {
+        state = Object.assign({}, state, payload)
+        pub()
+    }
+
+    pub()
+
+</script>
