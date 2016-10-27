@@ -9,6 +9,9 @@
  */
 
 export default function create(first, ...rest) {
+    if (typeof first !== 'function')
+        throw new TypeError('First argument must be a function!')
+
     let execute = first
     let chain = rest
 
